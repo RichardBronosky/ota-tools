@@ -1,0 +1,50 @@
+#!/usr/bin/env bash 
+
+if [[ ! ( # any of the following are not true
+        # 1st arg is an existing regular file
+        -f "$1" &&
+        # ...and it has a .ipa extension
+        "${1##*.}" == "ipa" &&
+        # 2nd arg is an existing regular file
+        -f "$2" &&
+        # ...and it has an .mobileprovision extension
+        "${2##*.}" == "mobileprovision" &&
+        # 3rd arg is a non-empty string
+        -n "$3"
+        ) ]];
+    then
+        echo "    Usage: $(basename "$0") Application.ipa foo/bar.mobileprovision \"iPhone Distribution: I can haz code signed\""
+    exit;
+fi
+
+## Exit on use of an uninitialized variable
+set -o nounset
+## Exit if any statement returns a non-true return value (non-zero)
+set -o errexit
+## Announce commands
+#set -o xtrace
+
+realpath(){
+    echo "$(cd "$(dirname "$1")"; echo -n "$(pwd)/$(basename "$1")")";
+}
+
+IPA="$(realpath $1)"
+TMP="$(mktemp -d $PWD/resign.$(basename $IPA .ipa).XXXXX)"
+IPA_NEW="$(pwd)/$(basename $IPA .ipa).resigned.ipa"
+PROVISION="$(realpath $2)"
+CERTIFICATE="$3"
+CLEANUP_TEMP=0 # Do not remove this line or "set -o nounset" will error on checks below
+#CLEANUP_TEMP=1 # Uncomment this line if you want this script to clean up after itself
+cd "$TMP"
+[[ $CLEANUP_TEMP -ne 1 ]] && echo "Using temp dir: $TMP"
+unzip -q "$IPA"
+echo "App has BundleIdentifier '$(/usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' Payload/*.app/Info.plist)' and BundleVersion $(/usr/libexec/PlistBuddy -c 'Print :CFBundleVersion' Payload/*.app/Info.plist)"
+security cms -D -i Payload/*.app/embedded.mobileprovision > mobileprovision.plist
+echo "App has provision   '$(/usr/libexec/PlistBuddy -c "Print :Name" mobileprovision.plist)', which supports '$(/usr/libexec/PlistBuddy -c "Print :Entitlements:application-identifier" mobileprovision.plist)'"
+security cms -D -i $PROVISION > provision.plist
+echo "Embedding provision '$(/usr/libexec/PlistBuddy -c "Print :Name" provision.plist)', which supports '$(/usr/libexec/PlistBuddy -c "Print :Entitlements:application-identifier" provision.plist)'"
+rm -rf Payload/*.app/_CodeSignature Payload/*.app/CodeResources
+cp "$PROVISION" Payload/*.app/embedded.mobileprovision
+/usr/bin/codesign -f -s "$CERTIFICATE" --resource-rules Payload/*.app/ResourceRules.plist Payload/*.app
+zip -qr "$IPA_NEW" Payload
+[[ $CLEANUP_TEMP -eq 1 ]] && rm -rf "$TMP"

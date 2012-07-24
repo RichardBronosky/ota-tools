@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>                                                                                                                                                                             
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>items</key>
+  <array>
+    <dict>  
+      <key>assets</key>
+      <array>   
+        <dict>      
+          <key>kind</key>
+          <string>software-package</string>
+          <key>url</key>
+          <!-- CHANGEME on next line -->
+          <string>http://example.com/CHANGEME_TO_URL_TO_HOSTED_IPA/app.ipa</string>
+        </dict>     
+      </array>  
+      <key>metadata</key>
+      <dict>    
+        <key>bundle-identifier</key>
+        <!-- CHANGEME on next line -->
+        <string>com.example.CHANGEME</string>
+        <key>bundle-version</key>
+        <string>2.0</string>
+        <key>kind</key>
+        <string>software</string>
+        <key>title</key>
+        <!-- CHANGEME on next line -->
+        <string>CHANGEME TO YOUR DESIRED TITLE (Only used for the 'example.com would like to install "App Title"' popup.)</string>
+      </dict>   
+    </dict> 
+  </array>
+</dict>
+</plist>
