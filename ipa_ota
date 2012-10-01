@@ -27,7 +27,7 @@ realpath(){
 IPA="$(realpath $1)"
 URL="$2"
 BASE="$(basename $IPA .ipa)"
-TMP="$(mktemp -d $PWD/$(basename "$0" .sh).$(basename $IPA .ipa).XXXXX)"
+TMP="$(mktemp -d /tmp/$(basename "$0" .sh).$(basename $IPA .ipa).XXXXX)"
 cd "$TMP"
 unzip -q "$IPA" "Payload/*.app/Info.plist"
 plutil -convert xml1 Payload/*.app/Info.plist -o Info.plist

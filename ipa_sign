@@ -29,7 +29,7 @@ realpath(){
 }
 
 IPA="$(realpath $1)"
-TMP="$(mktemp -d $PWD/resign.$(basename $IPA .ipa).XXXXX)"
+TMP="$(mktemp -d /tmp/resign.$(basename $IPA .ipa).XXXXX)"
 IPA_NEW="$(pwd)/$(basename $IPA .ipa).resigned.ipa"
 PROVISION="$(realpath $2)"
 CERTIFICATE="$3"
