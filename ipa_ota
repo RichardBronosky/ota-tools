@@ -88,7 +88,7 @@ cat << HTML
 HTML
 fi
 cat << HTML
-    <p><a href="itms-services://?action=download-manifest&url=${URL}${BASE}.plist">Install Enterprise App</a></p>
+    <p><a href="itms-services://?action=download-manifest&url=${URL}${BASE}.plist">Install $name</a></p>
 HTML
 if [[ ! -t 1 ]]; then
 cat << HTML
