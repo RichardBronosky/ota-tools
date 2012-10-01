@@ -39,6 +39,7 @@ name=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleDisplayName' Info.plist)
 cd - > /dev/null
 rm -rf "${TMP}"
 
+rm -f "${BASE}.plist"
 cat << plist > "${BASE}.plist"
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -78,7 +79,7 @@ plist
 
 /usr/libexec/PlistBuddy -c "Set :items:0:assets:0:url ${URL}${BASE}.ipa" "${BASE}.plist"
 /usr/libexec/PlistBuddy -c "Set :items:0:metadata:bundle-identifier $id" "${BASE}.plist"
-/usr/libexec/PlistBuddy -c "Set :items:0:metadata:title $name" "${BASE}.plist"
+/usr/libexec/PlistBuddy -c "Set :items:0:metadata:title $(sed "s/'/\\\\'/"<<<$name)" "${BASE}.plist"
 if [[ ! -t 1 ]]; then
 cat << HTML
 <html>
