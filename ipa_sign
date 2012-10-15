@@ -1,19 +1,31 @@
 #!/usr/bin/env bash 
 
+INSPECT_ONLY=0
+if [[ "$1" == '-i' ]]; then
+    INSPECT_ONLY=1
+    shift
+fi
+
 if [[ ! ( # any of the following are not true
         # 1st arg is an existing regular file
         -f "$1" &&
         # ...and it has a .ipa extension
         "${1##*.}" == "ipa" &&
         # 2nd arg is an existing regular file
-        -f "$2" &&
+        ($INSPECT_ONLY == 1 || -f "$2") &&
         # ...and it has an .mobileprovision extension
-        "${2##*.}" == "mobileprovision" &&
+        ($INSPECT_ONLY == 1 || "${2##*.}" == "mobileprovision") &&
         # 3rd arg is a non-empty string
-        -n "$3"
+        ($INSPECT_ONLY == 1 || -n "$3")
         ) ]];
     then
-        echo "    Usage: $(basename "$0") Application.ipa foo/bar.mobileprovision \"iPhone Distribution: I can haz code signed\""
+        cat << EOF >&2
+    Usage: $(basename "$0") Application.ipa foo/bar.mobileprovision \"iPhone Distribution: I can haz code signed\""
+    Usage: $(basename "$0") -i Application.ipa
+
+    Options:
+      -i    Only inspect the package. Do not resign it.
+EOF
     exit;
 fi
 
@@ -31,8 +43,6 @@ realpath(){
 IPA="$(realpath $1)"
 TMP="$(mktemp -d /tmp/resign.$(basename $IPA .ipa).XXXXX)"
 IPA_NEW="$(pwd)/$(basename $IPA .ipa).resigned.ipa"
-PROVISION="$(realpath $2)"
-CERTIFICATE="$3"
 CLEANUP_TEMP=0 # Do not remove this line or "set -o nounset" will error on checks below
 #CLEANUP_TEMP=1 # Uncomment this line if you want this script to clean up after itself
 cd "$TMP"
@@ -41,10 +51,14 @@ unzip -q "$IPA"
 echo "App has BundleIdentifier '$(/usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' Payload/*.app/Info.plist)' and BundleVersion $(/usr/libexec/PlistBuddy -c 'Print :CFBundleVersion' Payload/*.app/Info.plist)"
 security cms -D -i Payload/*.app/embedded.mobileprovision > mobileprovision.plist
 echo "App has provision   '$(/usr/libexec/PlistBuddy -c "Print :Name" mobileprovision.plist)', which supports '$(/usr/libexec/PlistBuddy -c "Print :Entitlements:application-identifier" mobileprovision.plist)'"
-security cms -D -i $PROVISION > provision.plist
-echo "Embedding provision '$(/usr/libexec/PlistBuddy -c "Print :Name" provision.plist)', which supports '$(/usr/libexec/PlistBuddy -c "Print :Entitlements:application-identifier" provision.plist)'"
-rm -rf Payload/*.app/_CodeSignature Payload/*.app/CodeResources
-cp "$PROVISION" Payload/*.app/embedded.mobileprovision
-/usr/bin/codesign -f -s "$CERTIFICATE" --resource-rules Payload/*.app/ResourceRules.plist Payload/*.app
-zip -qr "$IPA_NEW" Payload
+if [[ ! ($INSPECT_ONLY == 1) ]]; then
+    PROVISION="$(realpath $2)"
+    CERTIFICATE="$3"
+    security cms -D -i $PROVISION > provision.plist
+    echo "Embedding provision '$(/usr/libexec/PlistBuddy -c "Print :Name" provision.plist)', which supports '$(/usr/libexec/PlistBuddy -c "Print :Entitlements:application-identifier" provision.plist)'"
+    rm -rf Payload/*.app/_CodeSignature Payload/*.app/CodeResources
+    cp "$PROVISION" Payload/*.app/embedded.mobileprovision
+    /usr/bin/codesign -f -s "$CERTIFICATE" --resource-rules Payload/*.app/ResourceRules.plist Payload/*.app
+    zip -qr "$IPA_NEW" Payload
+fi
 [[ $CLEANUP_TEMP -eq 1 ]] && rm -rf "$TMP"
