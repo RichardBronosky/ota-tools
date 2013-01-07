@@ -84,15 +84,22 @@ if [[ ! -t 1 ]]; then
 cat << HTML
 <html>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <head><title>Enterprise App Installer</title><style>*{text-align:center;}</style></head>
+  <head>
+    <title>Enterprise App Installer</title>
+    <link rel="stylesheet" href="http://raw.github.com/RichardBronosky/ota-tools/master/mobile.css">
+  </head>
   <body>
+
+    <ul>
+      <h2 id="Apps">Apps</h2>
 HTML
 fi
 cat << HTML
-    <p><a href="itms-services://?action=download-manifest&url=${URL}${BASE}.plist">Install $name</a></p>
+      <li><a href="itms-services://?action=download-manifest&url=${URL}${BASE}.plist">Install $name</a></li>
 HTML
 if [[ ! -t 1 ]]; then
 cat << HTML
+    </ul>
   </body>
 </html>
 HTML

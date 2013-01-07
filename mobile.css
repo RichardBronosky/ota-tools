@@ -1,0 +1,79 @@
+body {
+	background-color: rgba(85, 86, 88, .2);
+	font-family: 'Helvetica Neue', Helvetica;
+	margin: 0em;
+}
+
+ul {
+	-webkit-margin-collapse: separate;
+	border-radius: 8px;
+	border: 1px solid #2F3031;
+	box-shadow: rgba(255, 255, 255, 0.15) 0 1px 0;
+	color: #252627;
+	display: block;
+	list-style-type: none;
+	margin: 15px 10px 17px 10px;
+	padding: 0;
+	overflow: hidden;
+}
+
+h2 {
+	background-color: rgba(85, 86, 88, 0.8);
+	color: #D5D6D7;
+	margin: 0em;
+	padding: 0.6em 0.3em;
+	text-align:center;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+
+h3 {
+	background-color: rgba(85, 86, 88, 0.6);
+	background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, rgba(123, 124, 127, 0.2)), color-stop(3%, rgba(98, 99, 101, 0.2)), color-stop(100%, rgba(72, 73, 75, 0.2)));
+	background-image: -webkit-linear-gradient(top, rgba(123, 124, 127, 0.2),rgba(98, 99, 101, 0.2) 3%,rgba(72, 73, 75, 0.2));
+	background-image: linear-gradient(top, rgba(123, 124, 127, 0.2),rgba(98, 99, 101, 0.2) 3%,rgba(72, 73, 75, 0.2));
+	background-image: none;
+	border-top: 1px solid #48494B;
+	color: #323234;
+	margin: 0em;
+	padding: 0.7em 0.35em;
+	text-align:center;
+	text-overflow: ellipsis;
+}
+
+li {
+	background-color: rgba(85, 86, 88, 0.4);
+	background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, rgba(123, 124, 127, 0.2)), color-stop(3%, rgba(98, 99, 101, 0.2)), color-stop(100%, rgba(72, 73, 75, 0.2)));
+	background-image: -webkit-linear-gradient(top, rgba(123, 124, 127, 0.2),rgba(98, 99, 101, 0.2) 3%,rgba(72, 73, 75, 0.2));
+	background-image: linear-gradient(top, rgba(123, 124, 127, 0.2),rgba(98, 99, 101, 0.2) 3%,rgba(72, 73, 75, 0.2));
+	background-image: none;
+	border-top: 1px solid #48494B;
+	text-overflow: ellipsis;
+}
+
+a {
+	color: #252627;
+	display: block;
+	padding: 1em 1.8em 1em 0.4em;
+	text-decoration: none;
+	-webkit-transform: translate3d(0, 0, 0);
+}
+
+a::after {
+	content: '>';
+	filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=60);
+	font-family: Futura, "Futura Condensed", Helvetica, Arial, sans-serif;
+	font-weight: bold;
+	height: 100%;
+	line-height: 3.2em;
+	opacity: 0.6;
+	pointer-events: none;
+	position: absolute;
+	right: 0;
+	top: 0;
+	vertical-align: middle;
+	width: 1.2em;
+	z-index: 10;
+}
+
