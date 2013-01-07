@@ -6,6 +6,11 @@ if [[ "$1" == '-i' ]]; then
     shift
 fi
 
+if [[ "$1" == '-l' ]]; then
+    security find-certificate -a | awk '/^keychain/ {if(k!=$0){print; k=$0;}} /"labl"<blob>=/{sub(".*<blob>=","          "); print}'
+    exit
+fi
+
 if [[ ! ( # any of the following are not true
         # 1st arg is an existing regular file
         -f "$1" &&
@@ -20,11 +25,12 @@ if [[ ! ( # any of the following are not true
         ) ]];
     then
         cat << EOF >&2
-    Usage: $(basename "$0") Application.ipa foo/bar.mobileprovision \"iPhone Distribution: I can haz code signed\""
+    Usage: $(basename "$0") Application.ipa foo/bar.mobileprovision "iPhone Distribution: I can haz code signed"
     Usage: $(basename "$0") -i Application.ipa
 
     Options:
       -i    Only inspect the package. Do not resign it.
+      -l    List certificates and exit
 EOF
     exit;
 fi
