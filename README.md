@@ -44,3 +44,13 @@ The script can detect when it is being redirected to a file. In this case it out
       </body>
     </html>
 
+####Note:
+It has been reported that on Mountain Lion, you may see an error like this:
+
+    Payload/MyApp.app: object file format unrecognized, invalid, or unsuitable
+
+Googling suggests that you can resolve this by setting an env var like so:
+
+    export CODESIGN_ALLOCATE="/Applications/Xcode.app/Contents/Developer/usr/bin/codesign_allocate"
+
+I have never seen this, so I can't directly speak for it.
