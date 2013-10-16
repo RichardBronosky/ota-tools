@@ -47,6 +47,7 @@ realpath(){
 }
 
 IPA="$(realpath $1)"
+PROVISION="$(realpath "$2")"
 TMP="$(mktemp -d /tmp/resign.$(basename "$IPA" .ipa).XXXXX)"
 IPA_NEW="$(pwd)/$(basename "$IPA" .ipa).resigned.ipa"
 CLEANUP_TEMP=0 # Do not remove this line or "set -o nounset" will error on checks below
@@ -60,9 +61,8 @@ echo "App has BundleIdentifier  '$(/usr/libexec/PlistBuddy -c 'Print :CFBundleId
 security cms -D -i Payload/*.app/embedded.mobileprovision > mobileprovision.plist
 echo "App has provision         '$(/usr/libexec/PlistBuddy -c "Print :Name" mobileprovision.plist)', which supports '$(/usr/libexec/PlistBuddy -c "Print :Entitlements:application-identifier" mobileprovision.plist)'"
 if [[ ! ($INSPECT_ONLY == 1) ]]; then
-    PROVISION="$(realpath "$2")"
     CERTIFICATE="$3"
-    security cms -D -i $PROVISION > provision.plist
+    security cms -D -i "$PROVISION" > provision.plist
     echo "Embedding provision       '$(/usr/libexec/PlistBuddy -c "Print :Name" provision.plist)', which supports '$(/usr/libexec/PlistBuddy -c "Print :Entitlements:application-identifier" provision.plist)'"
     rm -rf Payload/*.app/_CodeSignature Payload/*.app/CodeResources
     cp "$PROVISION" Payload/*.app/embedded.mobileprovision
