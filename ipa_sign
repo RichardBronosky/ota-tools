@@ -56,7 +56,7 @@ cd "$TMP"
 [[ $CLEANUP_TEMP -ne 1 ]] && echo "Using temp dir: $TMP"
 unzip -q "$IPA"
 plutil -convert xml1 Payload/*.app/Info.plist -o Info.plist
-echo "App has BundleDisplayName '$(/usr/libexec/PlistBuddy -c 'Print :CFBundleDisplayName' Info.plist)'"
+echo "App has BundleDisplayName '$(/usr/libexec/PlistBuddy -c 'Print :CFBundleDisplayName' Info.plist)' and BundleShortVersionString '$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' Info.plist)'"
 echo "App has BundleIdentifier  '$(/usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' Info.plist)' and BundleVersion $(/usr/libexec/PlistBuddy -c 'Print :CFBundleVersion' Info.plist)"
 security cms -D -i Payload/*.app/embedded.mobileprovision > mobileprovision.plist
 echo "App has provision         '$(/usr/libexec/PlistBuddy -c "Print :Name" mobileprovision.plist)', which supports '$(/usr/libexec/PlistBuddy -c "Print :Entitlements:application-identifier" mobileprovision.plist)'"
