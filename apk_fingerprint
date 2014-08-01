@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+
+if [[ ! ( # any of the following are not true
+        # 1st arg is an existing regular file
+        -f "$1" &&
+        # ...and it has a .apk extension
+        "${1##*.}" == "apk"
+        ) ]];
+    then
+        cat << EOF >&2
+    Usage: $(basename "$0") Application.apk
+EOF
+    exit;
+fi
+
+## Exit on use of an uninitialized variable
+set -o nounset
+## Exit if any statement returns a non-true return value (non-zero)
+set -o errexit
+## Announce commands
+#set -o xtrace
+
+realpath(){
+    echo "$(cd "$(dirname "$1")"; echo -n "$(pwd)/$(basename "$1")")";
+}
+
+APK="$(realpath $1)"
+TMP="$(mktemp -d /tmp/resign.$(basename "$APK" .apk).XXXXX)"
+
+CLEANUP_TEMP=0 # Do not remove this line or "set -o nounset" will error on checks below
+#CLEANUP_TEMP=1 # Uncomment this line if you want this script to clean up after itself
+cd "$TMP"
+[[ $CLEANUP_TEMP -ne 1 ]] && echo "Using temp dir: $TMP"
+unzip -q "$APK"
+for file in META-INF/*.RSA; do
+    keytool -printcert -file "$file"
+done
+[[ $CLEANUP_TEMP -eq 1 ]] && rm -rf "$TMP"
