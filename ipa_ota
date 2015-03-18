@@ -9,7 +9,7 @@ if [[ ! ( # any of the following are not true
         -n "$2"
         ) ]];
     then
-        echo "    Usage: $(basename "$0") Application.ipa http://dl.dropbox.com/u/310759/iphone_hosting_base_URL/"
+        echo "    Usage: $(basename "$0") Application.ipa https://dl.dropbox.com/u/310759/iphone_hosting_base_URL/"
     exit;
 fi
 
@@ -27,6 +27,7 @@ realpath(){
 IPA="$(realpath $1)"
 URL="$2"
 BASE="$(basename $IPA .ipa)"
+echo 'BASE $BASE'
 TMP="$(mktemp -d /tmp/$(basename "$0" .sh).$(basename $IPA .ipa).XXXXX)"
 cd "$TMP"
 unzip -q "$IPA" "Payload/*.app/Info.plist"
@@ -55,7 +56,7 @@ cat << plist > "${BASE}.plist"
           <string>software-package</string>
           <key>url</key>
           <!-- CHANGEME on next line -->
-          <string>http://example.com/CHANGEME_TO_URL_TO_HOSTED_IPA/app.ipa</string>
+          <string>https://example.com/CHANGEME_TO_URL_TO_HOSTED_IPA/app.ipa</string>
         </dict>
       </array>
       <key>metadata</key>
@@ -79,6 +80,7 @@ plist
 
 /usr/libexec/PlistBuddy -c "Set :items:0:assets:0:url ${URL}${BASE}.ipa" "${BASE}.plist"
 /usr/libexec/PlistBuddy -c "Set :items:0:metadata:bundle-identifier $id" "${BASE}.plist"
+/usr/libexec/PlistBuddy -c "Set :items:0:metadata:bundle-version $ver" "${BASE}.plist"
 /usr/libexec/PlistBuddy -c "Set :items:0:metadata:title $(sed "s/'/\\\\'/"<<<$name)" "${BASE}.plist"
 if [[ ! -t 1 ]]; then
 cat << HTML
