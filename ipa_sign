@@ -69,4 +69,6 @@ if [[ ! ($INSPECT_ONLY == 1) ]]; then
     /usr/bin/codesign -f -s "$CERTIFICATE" --resource-rules Payload/*.app/ResourceRules.plist Payload/*.app
     zip -qr "$IPA_NEW" Payload
 fi
-[[ $CLEANUP_TEMP -eq 1 ]] && rm -rf "$TMP"
+if [[ $CLEANUP_TEMP -eq 1 ]]; then
+    rm -rf "$TMP"
+fi
