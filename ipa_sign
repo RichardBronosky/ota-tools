@@ -1,4 +1,6 @@
 #!/usr/bin/env bash 
+set -o errexit
+set -o pipefail
 
 INSPECT_ONLY=0
 if [[ "$1" == '-i' ]]; then
@@ -69,6 +71,7 @@ if [[ ! ($INSPECT_ONLY == 1) ]]; then
     cp "$PROVISION" Payload/*.app/embedded.mobileprovision
     /usr/bin/codesign -f -s "$CERTIFICATE" --entitlements entitlements.plist Payload/*.app
     zip -qr "$IPA_NEW" Payload
+    echo "Resigned IPA saved to $IPA_NEW"
 fi
 if [[ $CLEANUP_TEMP -eq 1 ]]; then
     rm -rf "$TMP"
