@@ -10,14 +10,14 @@ script for generating the combo, they were joined together to create a tools
 package. These tools have saved me countless hours so they are being offered
 under the MIT license.
 
-##Contents:
+## Contents:
 
     ipa_ota    - generate basic plist and html combo for ota hosting
     ipa_sign   - sign ipa with a keychain certificate and replace its provision
     app.plist  - simple plist example
     index.html - simple hosting flatfile example
 
-##Usage:
+## Usage:
 
 **ipa_sign** takes an ipa file, provision file, and the name of the certificate in your keychain that you want to sign with.
 
@@ -44,7 +44,7 @@ The script can detect when it is being redirected to a file. In this case it out
       </body>
     </html>
 
-####Note:
+#### Note:
 It has been reported that on Mountain Lion, you may see an error like this:
 
     Payload/MyApp.app: object file format unrecognized, invalid, or unsuitable
