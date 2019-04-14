@@ -59,12 +59,12 @@ unzip -q "$IPA"
 plutil -convert xml1 Payload/*.app/Info.plist -o Info.plist
 echo "App has BundleDisplayName '$(/usr/libexec/PlistBuddy -c 'Print :CFBundleDisplayName' Info.plist)' and BundleShortVersionString '$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' Info.plist)'"
 echo "App has BundleIdentifier  '$(/usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' Info.plist)' and BundleVersion $(/usr/libexec/PlistBuddy -c 'Print :CFBundleVersion' Info.plist)"
-security cms -D -i Payload/*.app/embedded.mobileprovision > mobileprovision.plist
+security cms -D -i Payload/*.app/embedded.mobileprovision 2>/dev/null > mobileprovision.plist
 echo "App has provision         '$(/usr/libexec/PlistBuddy -c "Print :Name" mobileprovision.plist)', which supports '$(/usr/libexec/PlistBuddy -c "Print :Entitlements:application-identifier" mobileprovision.plist)'"
 if [[ ! ($INSPECT_ONLY == 1) ]]; then
     PROVISION="$(realpath "$2")"
     CERTIFICATE="$3"
-    security cms -D -i "$PROVISION" > provision.plist
+    security cms -D -i "$PROVISION" 2>/dev/null> provision.plist
     /usr/libexec/PlistBuddy  -x -c 'Print :Entitlements' provision.plist > entitlements.plist
     echo "Embedding provision       '$(/usr/libexec/PlistBuddy -c "Print :Name" provision.plist)', which supports '$(/usr/libexec/PlistBuddy -c "Print :Entitlements:application-identifier" provision.plist)'"
     rm -rf Payload/*.app/_CodeSignature Payload/*.app/CodeResources
